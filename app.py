@@ -38,7 +38,12 @@ app.config["LOGIN_USERNAME"] = "admin"
 from werkzeug.security import check_password_hash, generate_password_hash
 app.config["LOGIN_PASSWORD_HASH"] = generate_password_hash("change-me")
 app.config["LOGIN_PASSWORD_HASH"] = "scrypt:32768:8:1$T0QbiwVsMsGc29ER$56b5db883656c24db5ce47f00b8e8cb6ef7fe110f525ecebfc800c01e0550474a2b0a9d3eb107c7db5194d73c6dcd72c92a616d65070bd7611f2c344d3ab386b"
+db_path = os.environ.get("DATABASE_PATH", os.path.join(app.instance_path, "proxima.db"))
+os.makedirs(os.path.dirname(db_path), exist_ok=True)
 
+# Example if you're using SQLAlchemy
+app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{db_path}"
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 # Endpoints that can be visited without login
 PUBLIC_ENDPOINTS = {
     "login", "static",  # allow /login and /static/* 
