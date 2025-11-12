@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Proxima Trading</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+
+    <!-- Ton style personnalisé -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <style>
+      body { padding: 20px; background: #f9fbff; }
+      .logo { font-weight: 800; letter-spacing: .5px; }
+      .table-sm td, .table-sm th { padding: .35rem; }
+      .receipt { max-width: 800px; margin: auto; }
+      .muted { color:#666; }
+    </style>
+  </head>
+
+  <body>
+
+    <!-- ===== Barre de navigation (haut de page) ===== -->
+    <nav class="top-menu mb-4">
+      <a href="{{ url_for('index') }}" 
+         class="{% if request.endpoint == 'index' %}active{% endif %}">Menu</a>
+
+      <a href="{{ url_for('products') }}" 
+         class="{% if request.endpoint == 'products' %}active{% endif %}">Produit</a>
+
+      <a href="{{ url_for('clients') }}" 
+         class="{% if request.endpoint == 'clients' %}active{% endif %}">Client</a>
+
+      <a href="{{ url_for('invoice_new') }}" 
+         class="{% if request.endpoint == 'invoice_new' %}active{% endif %}">Facture</a>
+
+      <a href="{{ url_for('payment_new') }}" 
+         class="{% if request.endpoint == 'payment_new' %}active{% endif %}">Paiement</a>
+
+      <a href="{{ url_for('inventory') }}" 
+         class="{% if request.endpoint == 'inventory' %}active{% endif %}">Inventaire</a>
+
+      {% if session.logged_in %}
+        <a href="{{ url_for('logout') }}" class="logout-btn">Déconnexion</a>
+      {% endif %}
+    </nav>
+
+    <!-- Messages Flash -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="container">
+          {% for category, message in messages %}
+            <div class="alert alert-{{ 'warning' if category=='message' else category }} alert-dismissible fade show" role="alert">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <!-- Contenu principal -->
+    <div class="container">
+      {% block content %}{% endblock %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

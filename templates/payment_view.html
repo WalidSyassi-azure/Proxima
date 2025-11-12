@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>Payement {{ pay.numero }}</h2>
+<p class="muted">Client: {{ pay.client.nom_client }} | Date: {{ pay.date_pymt }} | Montant: {{ '%.2f'|format(pay.montant_pymt) }}</p>
+
+<h5>Appliquer à une facture</h5>
+<form method="post" class="row g-2 mb-3">
+  <div class="col-md-4">
+    <select class="form-select" name="invoice_id" required>
+      <option value="">Choisir facture...</option>
+      {% for i in invoices %}<option value="{{ i.id }}">{{ i.numero }} — {{ i.client.nom_client }} — {{ i.date_vente }}</option>{% endfor %}
+    </select>
+  </div>
+  <div class="col-md-2"><input class="form-control" type="number" step="0.01" name="amount_applied" placeholder="Montant" required></div>
+  <div class="col-md-2"><button class="btn btn-outline-primary w-100">Appliquer</button></div>
+</form>
+
+<p><strong>Montant restant:</strong> {{ '%.2f'|format(remaining) }}</p>
+
+<table class="table table-sm table-striped">
+  <thead><tr><th>Facture</th><th>Montant appliqué</th></tr></thead>
+  <tbody>
+    {% for a in pay.applications %}
+      <tr><td>{{ a.facture.numero }}</td><td>{{ '%.2f'|format(a.amount_applied) }}</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<a class="btn btn-secondary" href="{{ url_for('payment_receipt', payment_id=pay.id) }}" target="_blank">Voir reçu de paiement</a>
+{% endblock %}

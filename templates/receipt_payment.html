@@ -1,0 +1,77 @@
+{% extends "pdf_base.html" %}
+{% block body %}
+
+{% set logo = url_for('static', filename='images/logo.png', _external=True) %}
+
+<header class="doc-header">
+  <div class="brand">
+    <img src="{{ logo }}" alt="Proxima Trading" class="logo">
+  </div>
+  <div class="doc-title">
+    <div class="title-main">REÇU DE PAIEMENT — N° {{ pay.numero }}</div>
+    <div class="title-sub">Date : {{ pay.date_pymt }}</div>
+  </div>
+</header>
+
+<hr class="bar">
+
+<section class="client-block">
+  <div class="client-row">
+    <span class="label">Client :</span>
+    <span class="value">{{ pay.client.nom_client }}</span>
+  </div>
+  <div class="client-row">
+    <span class="label">Banque / Type :</span>
+    <span class="value">{{ pay.banque or '' }}</span>
+  </div>
+  <div class="client-row">
+    <span class="label">Montant payé :</span>
+    <span class="value">{{ '%.2f'|format(pay.montant_pymt) }}</span>
+  </div>
+</section>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th style="width:45%">Facture</th>
+      <th style="width:25%">Date</th>
+      <th style="width:30%">Montant appliqué</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for a in pay.applications %}
+    <tr>
+      <td class="text-left">{{ a.facture.numero }}</td>
+      <td>{{ a.facture.date_vente }}</td>
+      <td>{{ '%.2f'|format(a.amount_applied) }}</td>
+    </tr>
+    {% else %}
+    <tr>
+      <td colspan="3" class="text-muted">Aucune affectation à une facture.</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<table class="totals">
+  <tr>
+    <td class="label">Total paiement</td>
+    <td class="amount">{{ '%.2f'|format(total_applied) }}</td>
+  </tr>
+  <tr>
+    <td class="label">Montant restant</td>
+    <td class="amount">{{ '%.2f'|format(remaining) }}</td>
+  </tr>
+</table>
+
+<div class="footer-push"></div>
+
+<!-- the actual fixed footer -->
+<div class="doc-footer">
+  <div class="sep"></div>
+  PROXIMA TRADING SARL — Adresse: Quartier El Wahda 02 Av Ras El Khayma Rue 26 N°30 Laayoune<br>
+  RC: 44653 &nbsp; IF: 53629154 &nbsp; ICE: 00325020200058 &nbsp; PATENTE: 77320085<br>
+  Email: PROXIMATRADING74@GMAIL.COM &nbsp; Tél: 06.39.06.82.86
+</div>
+
+{% endblock %}

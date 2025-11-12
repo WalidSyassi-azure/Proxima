@@ -1,0 +1,135 @@
+/* ============================
+   PDF Styles (A4) – Proxima
+   ============================ */
+
+/* 1) Page margin — give the footer room on every page */
+@page {
+  /*           top  right bottom left  */
+  margin:     16mm 14mm 40mm  14mm;   /* <= 40mm bottom, safe for a 22–24mm footer */
+}
+
+/* 2) Base */
+* { box-sizing: border-box; }
+
+html, body { height: auto; }
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  color: #111;
+  font-size: 12px;
+  margin: 0;                  /* handled by @page */
+  /* Global safety space so content never hits the fixed footer
+     (works even if a template isn't wrapped in .content).      */
+  padding: 0 0 28mm 0;        /* >= footer height + a small buffer */
+}
+
+/* If your templates wrap the main content: extra safety */
+.content {
+  padding-bottom: 28mm;       /* keep in sync with body padding-bottom */
+}
+
+/* Optional spacer you can place before the footer in very long pages */
+.footer-push { height: 28mm; }
+
+/* Utilities */
+.text-left   { text-align: left; }
+.text-center { text-align: center; }
+.text-right  { text-align: right; }
+.text-end    { text-align: right; }
+.text-muted  { color: #666; }
+.fw-600      { font-weight: 600; }
+
+/* ===== Header / Title ===== */
+.doc-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.brand .logo { height: 60px; width: auto; }
+
+.doc-title { text-align: right; }
+
+.title-main { font-size: 16px; font-weight: 700; letter-spacing: .3px; }
+.title-sub  { font-size: 12px; margin-top: 2px; color: #444; }
+
+.bar {
+  border: 0; border-top: 3px solid #0b2e73;
+  margin: 8px 0 12px 0;
+}
+
+/* ===== Client Block ===== */
+.client-block { margin-bottom: 10px; }
+.client-row   { margin: 2px 0; }
+.client-row .label { font-weight: 700; color: #0b2e73; margin-right: 6px; }
+.client-row .value { color: #111; }
+
+/* ===== Tables ===== */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 6px;
+  margin-bottom: 10mm;          /* breathing room above the footer */
+}
+
+.table thead th {
+  background: #0b2e73;
+  color: #fff;
+  font-weight: 700;
+  padding: 6px 8px;
+  border: 1px solid #0b2e73;
+  text-align: center;
+}
+
+.table tbody td {
+  padding: 6px 8px;
+  border: 1px solid #aab3c2;
+  text-align: center;
+}
+
+.table tbody tr:nth-child(even) td { background: #f7f9fc; }
+
+/* Compact table if needed elsewhere */
+.table-sm thead th,
+.table-sm tbody td { padding: 4px 6px; }
+
+/* ===== Totals box ===== */
+.totals {
+  width: 50%;
+  margin-left: auto;
+  margin-top: 12px;
+  margin-bottom: 8mm;
+  border-collapse: collapse;
+}
+.totals td { border: 1px solid #aab3c2; padding: 6px 8px; }
+.totals .label  { background: #eef2f7; font-weight: 600; }
+.totals .amount { text-align: right; width: 35%; }
+.totals .strong { font-weight: 800; }
+
+/* ===== Fixed Footer =====
+   Height ~22–24mm. We draw a white background so nothing can show through. */
+.doc-footer {
+  position: fixed;
+  left: 14mm;                   /* match @page left/right */
+  right: 14mm;
+  bottom: 12mm;                 /* sits inside the 40mm page bottom */
+  height: 22mm;
+  padding: 4mm 0 0 0;
+  font-size: 11px;
+  color: #111;
+  text-align: center;
+  line-height: 1.35;
+  background: #fff;             /* prevent table lines from “bleeding” through */
+}
+
+.doc-footer .sep {
+  border-top: 1px solid #0b2e73;
+  height: 1px;
+  margin-bottom: 6px;
+  width: 100%;
+}
+
+.company-lines { line-height: 1.35; }
+
+/* ===== Balance colors ===== */
+.solde-neg { color: #d9534f; }  /* owes money (bal > 0) */
+.solde-pos { color: #2e7d32; }  /* OK/credit (bal <= 0) */

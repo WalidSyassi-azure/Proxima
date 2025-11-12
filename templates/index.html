@@ -1,0 +1,52 @@
+{% extends "layout.html" %}
+{% block content %}
+<style>
+  /* Page-specific styles */
+  body { background: linear-gradient(180deg, #f8fbff 0%, #ffffff 60%); }
+  .landing-wrap {
+    min-height: calc(100vh - 120px);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .menu-card {
+    width: 100%; max-width: 760px;
+    background: #fff; border-radius: 24px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.08);
+    padding: 32px 28px;
+  }
+  .brand { font-weight: 800; letter-spacing: .04em; }
+  .sub { color: #6c757d; }
+  .tiles {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+  }
+  @media (max-width: 576px) { .tiles { grid-template-columns: 1fr 1fr; } }
+  .action-btn { padding: 14px 16px; border-radius: 14px; font-weight: 600; }
+</style>
+
+<div class="landing-wrap">
+  <div class="menu-card text-center">
+    <div class="mb-2">
+      <div class="brand h2 mb-0">PROXIMA TRADING</div>
+      <div class="h1 fw-bold">Menu Général</div>
+      <p class="sub mb-4">Gérez vos ventes, clients, produits et paiements</p>
+    </div>
+
+    <div class="mb-3">
+      <a class="btn btn-outline-primary btn-lg action-btn w-100"
+         href="{{ url_for('inventory') }}">
+        Statistiques & Inventaire
+      </a>
+    </div>
+
+    <div class="tiles mb-3">
+      <a class="btn btn-primary action-btn"   href="{{ url_for('invoice_new') }}">Facture</a>
+      <a class="btn btn-primary action-btn"   href="{{ url_for('clients') }}">Client</a>
+      <a class="btn btn-primary action-btn"   href="{{ url_for('products') }}">Produit</a>
+      <a class="btn btn-secondary action-btn" href="{{ url_for('payment_new') }}">Paiement</a>
+    </div>
+
+    <div class="text-muted small">Astuce : commencez par créer vos produits et clients.</div>
+  </div>
+</div>
+{% endblock %}

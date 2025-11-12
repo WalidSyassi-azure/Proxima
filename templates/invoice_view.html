@@ -1,0 +1,59 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>Facture {{ inv.numero }} {% if inv.finalized %}<span class="badge bg-success">Finalisée</span>{% endif %}</h2>
+<p class="muted">Client: {{ inv.client.nom_client }} | Date: {{ inv.date_vente }}</p>
+
+<h5>Ajouter une ligne</h5>
+<form method="post" action="{{ url_for('invoice_add_line', invoice_id=inv.id) }}" class="row g-2 mb-3">
+  <div class="col-md-4">
+    <select class="form-select" name="product_id" required>
+      <option value="">Produit...</option>
+      {% for p in products %}<option value="{{ p.id }}">{{ p.ref_produit }} — {{ p.nom_produit }}</option>{% endfor %}
+    </select>
+  </div>
+  <div class="col-md-2"><input class="form-control" type="number" step="0.01" name="prix_vnt" placeholder="PRIX_VNT" required></div>
+  <div class="col-md-2"><input class="form-control" type="number" min="1" name="qte_vnd" placeholder="QTE_VND" required></div>
+  <div class="col-md-2"><button class="btn btn-outline-primary w-100">Ajouter</button></div>
+</form>
+
+<table class="table table-sm table-striped">
+  <thead><tr>
+    <th>Produit</th><th>Prix in</th><th>Prix out (vente)</th><th>Qte</th><th>Total</th>
+  </tr></thead>
+  <tbody>
+    {% for l in inv.lines %}
+      <tr>
+        <td>{{ l.product.nom_produit }}</td>
+        <td>{{ '%.2f'|format(l.product.prix_achat or 0) }}</td>
+        <td>{{ '%.2f'|format(l.prix_vnt) }}</td>
+        <td>{{ l.qte_vnd }}</td>
+        <td>{{ '%.2f'|format(l.total()) }}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+  <div class="col-md-4">
+    <select class="form-select" name="product_id" required>
+      <option value="">Produit...</option>
+      {% for p in products %}<option value="{{ p.id }}">{{ p.ref_produit }} — {{ p.nom_produit }}</option>{% endfor %}
+    </select>
+  </div>
+  <div class="col-md-2"><input class="form-control" type="number" step="0.01" name="prix_vnt" placeholder="PRIX_VNT" required></div>
+  <div class="col-md-2"><input class="form-control" type="number" min="1" name="qte_retour" placeholder="QTE_RETOUR" required></div>
+  <div class="col-md-2"><input class="form-control" type="date" name="date" required></div>
+  <div class="col-md-2"><button class="btn btn-outline-warning w-100">Ajouter retour</button></div>
+</form>
+
+<div class="mb-3">
+  <strong>Total HT:</strong> {{ '%.2f'|format(inv.total_ht()) }} |
+  <strong>TVA:</strong> {{ '%.2f'|format(inv.total_tva()) }} |
+  <strong>Total TTC:</strong> {{ '%.2f'|format(inv.total_ttc()) }}
+</div>
+
+<form method="post" action="{{ url_for('invoice_finalize', invoice_id=inv.id) }}" class="d-inline">
+  <button class="btn btn-success" {% if inv.finalized %}disabled{% endif %}>Finaliser</button>
+</form>
+<a class="btn btn-secondary" href="{{ url_for('invoice_receipt', invoice_id=inv.id) }}" target="_blank">Voir reçu</a>
+
+{% endblock %}

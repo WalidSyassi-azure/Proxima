@@ -1,0 +1,79 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>Produits</h2>
+
+<h5 class="mt-2">Entrée (Stock In)</h5>
+<form method="post" action="{{ url_for('stock_entry') }}" class="row g-2 mb-4">
+  <div class="col-md-4">
+    <select class="form-select" name="product_id" required>
+      <option value="">Choisir produit...</option>
+      {% for p in items %}<option value="{{ p.id }}">{{ p.ref_produit }} — {{ p.nom_produit }}</option>{% endfor %}
+    </select>
+  </div>
+  <div class="col-md-3"><input class="form-control" type="date" name="date" required></div>
+  <div class="col-md-3"><input class="form-control" type="number" min="1" name="qte_entree" placeholder="QTE_ENTREE" required></div>
+  <div class="col-md-2"><button class="btn btn-outline-primary w-100">Entrer</button></div>
+</form>
+
+<h5>Ajouter un produit</h5>
+<form method="post" class="row g-2 mb-3">
+  <div class="col-md-2">
+    <input class="form-control" name="ref_produit" placeholder="REF_PRODUIT" required>
+  </div>
+  <div class="col-md-3">
+    <input class="form-control" name="nom_produit" placeholder="NOM_PRODUIT" required>
+  </div>
+  <div class="col-md-2">
+    <input class="form-control" type="number" step="0.01" name="prix_achat" placeholder="PRIX_ACH (in)">
+  </div>
+  <div class="col-md-2">
+    <input class="form-control" type="number" step="0.01" name="prix_std" placeholder="PRIX_STD (out)">
+  </div>
+  <!-- NEW: initial stock fields -->
+  <div class="col-md-2">
+    <input class="form-control" type="number" min="0" name="qte_entree" placeholder="QTE_ENTREE">
+  </div>
+  <div class="col-md-1 d-none d-md-block">
+    <input class="form-control" type="date" name="date_entry" title="Date entrée (optionnel)">
+  </div>
+  <div class="col-md-12 col-lg-2">
+    <button class="btn btn-success w-100">Ajouter</button>
+  </div>
+</form>
+
+<table class="table table-sm table-striped align-middle">
+  <thead>
+    <tr>
+      <th style="width:14%">REF</th>
+      <th style="width:28%">NOM</th>
+      <th class="text-end" style="width:12%">PRIX IN</th>
+      <th class="text-end" style="width:12%">PRIX OUT</th>
+      <!-- NEW: total QTE entered -->
+      <th class="text-end" style="width:10%">QTE IN</th>
+      <th class="text-end" style="width:24%">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for p in items %}
+      <tr>
+        <td>
+          <form method="post" action="{{ url_for('product_update', product_id=p.id) }}" class="row g-2 align-items-center">
+            <div class="col"><input class="form-control form-control-sm" name="ref_produit" value="{{ p.ref_produit }}"></div>
+        </td>
+        <td><input class="form-control form-control-sm" name="nom_produit" value="{{ p.nom_produit }}"></td>
+        <td><input class="form-control form-control-sm text-end" type="number" step="0.01" name="prix_achat" value="{{ '%.2f'|format(p.prix_achat or 0) }}"></td>
+        <td><input class="form-control form-control-sm text-end" type="number" step="0.01" name="prix_std" value="{{ '%.2f'|format(p.prix_std or 0) }}"></td>
+        <!-- NEW: show total qte in -->
+        <td class="text-end"><span class="text-muted">{{ qin(p.id) }}</span></td>
+        <td class="text-end">
+            <button class="btn btn-sm btn-primary me-1">Enregistrer</button>
+          </form>
+          <form method="post" action="{{ url_for('product_delete', product_id=p.id) }}" class="d-inline">
+            <button class="btn btn-sm btn-outline-danger" onclick="return confirm('Supprimer ce produit ?')">Supprimer</button>
+          </form>
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

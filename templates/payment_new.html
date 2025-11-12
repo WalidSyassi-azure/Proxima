@@ -1,0 +1,154 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>Nouveau Payement</h2>
+
+<!-- Create payment -->
+<form method="post" class="row g-2 mb-3">
+  <div class="col-md-3"><input class="form-control" name="numero" placeholder="N°PAYEMENT" required></div>
+  <div class="col-md-3">
+    <select class="form-select" name="client_id" required>
+      <option value="">NOM_CLIENT...</option>
+      {% for c in clients %}<option value="{{ c.id }}">{{ c.nom_client }}</option>{% endfor %}
+    </select>
+  </div>
+  <div class="col-md-2"><input class="form-control" type="date" name="date_pymt" required></div>
+  <div class="col-md-2"><input class="form-control" type="number" step="0.01" name="montant_pymt" placeholder="MONTANT_PYMT" required></div>
+  <div class="col-md-2">
+    <select class="form-select" name="banque">
+      <option value="">Type</option>
+      <option>cheque</option>
+      <option>virement</option>
+      <option>traita</option>
+    </select>
+  </div>
+  <div class="col-md-2"><input class="form-control" type="date" name="date_echeance" placeholder="DATE_ECHEANCE"></div>
+  <div class="col-md-2"><button class="btn btn-success w-100">Créer</button></div>
+</form>
+
+<!-- Search / Focus section -->
+<form method="get" class="row g-2 align-items-center mb-4">
+  <div class="col-md-4">
+    <select class="form-select" name="filter_client_id">
+      <option value="">— Rechercher un client… —</option>
+      {% for c in clients %}
+        <option value="{{ c.id }}"
+          {% if selected_client and selected_client.id == c.id %}selected{% endif %}>
+          {{ c.nom_client }}
+        </option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-2">
+    <button class="btn btn-outline-primary w-100">Rechercher</button>
+  </div>
+  {% if selected_client %}
+  <div class="col-md-2">
+    <a class="btn btn-outline-secondary w-100" href="{{ url_for('payment_new') }}">Réinitialiser</a>
+  </div>
+  {% endif %}
+</form>
+
+{% if selected_client %}
+  <!-- Focused client view -->
+  <div class="d-flex justify-content-between align-items-center mb-2">
+    <h5 class="mb-0">Client : {{ selected_client.nom_client }}</h5>
+    <div class="text-muted">
+      Total TTC: <strong>{{ '%.2f'|format(detail_totals.total_ttc) }}</strong> |
+      Payé: <strong>{{ '%.2f'|format(detail_totals.total_paid) }}</strong> |
+      Restant:
+      <strong class="{% if detail_totals.remaining>0 %}text-danger{% else %}text-success{% endif %}">
+        {{ '%.2f'|format(detail_totals.remaining) }}
+      </strong>
+    </div>
+  </div>
+
+  <div class="row g-3">
+    <div class="col-lg-7">
+      <div class="card">
+        <div class="card-header fw-bold">Factures (finalisées)</div>
+        <div class="card-body p-0">
+          <table class="table table-sm mb-0">
+            <thead><tr><th>N°</th><th>Date</th><th class="text-end">TTC</th><th class="text-end">Payé</th><th class="text-end">Restant</th><th class="text-end">Actions</th></tr></thead>
+            <tbody>
+              {% for row in detail_invoices %}
+                {% set i = row.i %}
+                <tr>
+                  <td>{{ i.numero }}</td>
+                  <td>{{ i.date_vente }}</td>
+                  <td class="text-end">{{ '%.2f'|format(row.total) }}</td>
+                  <td class="text-end">{{ '%.2f'|format(row.paid) }}</td>
+                  <td class="text-end {% if row.remaining>0 %}text-danger{% else %}text-success{% endif %}">{{ '%.2f'|format(row.remaining) }}</td>
+                  <td class="text-end">
+                    <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('invoice_view', invoice_id=i.id) }}">Ouvrir</a>
+                    <a class="btn btn-sm btn-outline-secondary" target="_blank" href="{{ url_for('invoice_receipt', invoice_id=i.id) }}">Reçu</a>
+                  </td>
+                </tr>
+              {% else %}
+                <tr><td colspan="6" class="text-muted">Aucune facture finalisée</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-5">
+      <div class="card">
+        <div class="card-header fw-bold">Payements</div>
+        <div class="card-body p-0">
+          <table class="table table-sm mb-0">
+            <thead><tr><th>N°</th><th>Date</th><th class="text-end">Montant</th><th class="text-end">Actions</th></tr></thead>
+            <tbody>
+              {% for p in detail_payments %}
+                <tr>
+                  <td>{{ p.numero }}</td>
+                  <td>{{ p.date_pymt }}</td>
+                  <td class="text-end">{{ '%.2f'|format(p.montant_pymt) }}</td>
+                  <td class="text-end">
+                    <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('payment_view', payment_id=p.id) }}">Ouvrir</a>
+                    <a class="btn btn-sm btn-outline-secondary" target="_blank" href="{{ url_for('payment_receipt', payment_id=p.id) }}">Reçu</a>
+                  </td>
+                </tr>
+              {% else %}
+                <tr><td colspan="4" class="text-muted">Aucun payement</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% else %}
+  <!-- Global table (no filter) -->
+  <h5>Situation des clients</h5>
+  <table class="table table-sm table-hover align-middle">
+    <thead>
+      <tr>
+        <th>Client</th>
+        <th class="text-end">Total TTC</th>
+        <th class="text-end">Payé</th>
+        <th class="text-end">Restant</th>
+        <th class="text-end">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in client_rows %}
+        {% set cid = row.c.id %}
+        <tr>
+          <td>{{ row.c.nom_client }}</td>
+          <td class="text-end">{{ '%.2f'|format(row.total) }}</td>
+          <td class="text-end">{{ '%.2f'|format(row.paid) }}</td>
+          <td class="text-end {% if row.remaining>0 %}text-danger{% else %}text-success{% endif %}">
+            {{ '%.2f'|format(row.remaining) }}
+          </td>
+          <td class="text-end">
+            <a class="btn btn-sm btn-outline-primary" href="{{ url_for('payment_new', filter_client_id=cid) }}">Historique</a>
+            <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('client_history', client_id=cid) }}" target="_blank">Ouvrir</a>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endif %}
+{% endblock %}

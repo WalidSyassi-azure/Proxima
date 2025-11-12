@@ -1,0 +1,179 @@
+/* ============================
+   STYLE GLOBAL – PROXIMA TRADING
+   ============================ */
+
+/* ---- Base ---- */
+body {
+  background: linear-gradient(180deg, #f8fbff 0%, #ffffff 60%);
+  font-family: "Inter", "Segoe UI", Arial, sans-serif;
+  color: #222;
+  margin: 0;
+  padding: 20px 0 40px;
+}
+
+/* ---- Navigation principale ---- */
+.top-menu {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.top-menu a {
+  display: inline-block;
+  background: #007bff;
+  color: #fff !important;
+  font-weight: 600;
+  text-decoration: none;
+  padding: 10px 20px;
+  margin: 6px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.25s ease;
+  letter-spacing: 0.3px;
+}
+
+.top-menu a:hover {
+  background: #005fcb;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.18);
+}
+
+.top-menu a.active {
+  background: #004bb5;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.25);
+}
+
+.top-menu .logout-btn {
+  background: #dc3545;
+}
+
+.top-menu .logout-btn:hover {
+  background: #b02a37;
+}
+
+/* ---- Conteneur principal ---- */
+.container {
+  background: #fff;
+  border-radius: 18px;
+  padding: 28px 32px;
+  max-width: 1100px;
+  margin: 0 auto;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+}
+
+/* ---- Titres ---- */
+h1, .h1, h2, .h2 {
+  font-weight: 700;
+  color: #0b2e73;
+  margin-bottom: 20px;
+}
+
+h3, .h3 {
+  font-weight: 600;
+  color: #222;
+  margin-bottom: 16px;
+}
+
+/* ---- Boutons généraux ---- */
+.btn {
+  border-radius: 10px !important;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.btn-primary {
+  background: #007bff;
+  border: none;
+}
+
+.btn-primary:hover {
+  background: #005ec5;
+}
+
+.btn-success {
+  background: #198754;
+  border: none;
+}
+
+.btn-success:hover {
+  background: #146c43;
+}
+
+.btn-outline-primary:hover {
+  background: #007bff;
+  color: #fff;
+}
+
+/* ---- Tables ---- */
+table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.table {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.table thead {
+  background: #0b2e73;
+  color: #fff;
+  border-bottom: 2px solid #0b2e73;
+}
+
+.table th {
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 13px;
+}
+
+.table tbody tr:nth-child(even) {
+  background: #f7f9fc;
+}
+
+.table td input {
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  padding: 4px 6px;
+}
+
+.table td input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.15);
+}
+
+/* ---- Sections d’action (formulaires, filtres) ---- */
+section, form {
+  margin-bottom: 24px;
+}
+
+input, select {
+  border-radius: 10px !important;
+}
+
+input:focus, select:focus {
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15);
+  border-color: #007bff;
+}
+
+/* ---- Équilibre visuel bas de page ---- */
+footer {
+  text-align: center;
+  margin-top: 60px;
+  font-size: 13px;
+  color: #777;
+}
+
+/* ---- Petites transitions pour modernité ---- */
+a, button, input, select {
+  transition: all 0.2s ease;
+}
+
+/* ---- Équilibre du contenu ---- */
+.card, .container {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
