@@ -20,8 +20,14 @@ import os
 from functools import wraps
 from flask import session, redirect, url_for, request, flash
 
-WKHTMLTOPDF_EXE = r"C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe"
+WKHTMLTOPDF_EXE = (
+    os.getenv("WKHTMLTOPDF_EXE")
+    or shutil.which("wkhtmltopdf")
+    or (r"C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe" if platform.system() == "Windows" else "/usr/bin/wkhtmltopdf")
+)
+
 _pdfkit_config = pdfkit.configuration(wkhtmltopdf=WKHTMLTOPDF_EXE)
+
 # make sure the instance folder exists
 os.makedirs(app.instance_path, exist_ok=True)
 
