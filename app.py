@@ -12,7 +12,8 @@ from flask import send_file
 import io
 import pdfkit
 app = Flask(__name__, instance_relative_config=True)
-
+import shutil
+import platform
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///proxima.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SECRET_KEY"] = "dev-secret"
