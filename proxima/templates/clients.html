@@ -1,0 +1,83 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<h2 class="mb-3">Clients</h2>
+
+<div class="d-flex gap-2 mb-3">
+  <a class="btn btn-outline-secondary" href="{{ url_for('clients_export_pdf') }}">Télécharger (PDF)</a>
+  <a class="btn btn-outline-secondary" href="{{ url_for('clients_export_csv') }}">Télécharger (CSV)</a>
+  <button class="btn btn-outline-secondary" onclick="window.print()">Imprimer</button>
+</div>
+
+<!-- Ajout d'un client -->
+<form class="row g-2 mb-3" action="{{ url_for('clients') }}" method="post">
+  <div class="col-12 col-md-3">
+    <input name="nom_client" class="form-control" placeholder="NOM_CLIENT" required>
+  </div>
+  <div class="col-12 col-md-2">
+    <input name="tel" class="form-control" placeholder="N°TEL">
+  </div>
+  <div class="col-12 col-md-4">
+    <input name="adresse" class="form-control" placeholder="ADRESSE">
+  </div>
+  <div class="col-12 col-md-2">
+    <input name="ville" class="form-control" placeholder="VILLE">
+  </div>
+  <div class="col-12 col-md-1 d-grid">
+    <button class="btn btn-success">Ajouter</button>
+  </div>
+</form>
+
+<!-- Liste éditable -->
+<div class="table-responsive">
+  <table class="table table-sm align-middle">
+    <thead class="table-light">
+      <tr>
+        <th>Nom</th>
+        <th>Tel</th>
+        <th>Adresse</th>
+        <th>Ville</th>
+        <th class="text-end">Solde (MAD)</th>
+        <th style="width:180px;">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for c in items %}
+      {% set bal = client_balance(c.id) %}
+      <tr>
+        <td class="p-2">
+          <input name="nom_client" class="form-control" value="{{ c.nom_client or '' }}" form="f{{ c.id }}">
+        </td>
+        <td class="p-2">
+          <input name="tel" class="form-control" value="{{ c.tel or '' }}" form="f{{ c.id }}">
+        </td>
+        <td class="p-2">
+          <input name="adresse" class="form-control" value="{{ c.adresse or '' }}" form="f{{ c.id }}">
+        </td>
+        <td class="p-2">
+          <input name="ville" class="form-control" value="{{ c.ville or '' }}" form="f{{ c.id }}">
+        </td>
+        <td class="text-right fw-semibold {{ 'solde-neg' if bal > 0 else 'solde-pos' }}">
+          {{ '%.2f'|format(bal) }}
+        </td>
+
+        <td class="p-2">
+          <!-- Formulaire d'update pour la ligne -->
+          <form id="f{{ c.id }}" action="{{ url_for('client_update', client_id=c.id) }}" method="post" class="d-inline">
+            <button class="btn btn-primary btn-sm">Enregistrer</button>
+          </form>
+
+          <!-- Formulaire de suppression dans la même cellule -->
+          <form action="{{ url_for('client_delete', client_id=c.id) }}" method="post"
+                class="d-inline"
+                onsubmit="return confirm('Supprimer ce client ?');">
+            <button class="btn btn-outline-danger btn-sm">Supprimer</button>
+          </form>
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}

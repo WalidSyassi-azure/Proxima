@@ -1,0 +1,79 @@
+{% extends "pdf_base.html" %}
+{% block body %}
+
+{% set logo = url_for('static', filename='images/logo.png', _external=True) %}
+
+<header class="doc-header">
+  <div class="brand">
+    <img src="{{ logo }}" alt="Proxima Trading" class="logo">
+  </div>
+  <div class="doc-title">
+    <div class="title-main">FACTURE — N° {{ inv.numero }}</div>
+    <div class="title-sub">Date : {{ inv.date_vente }}</div>
+  </div>
+</header>
+
+<hr class="bar">
+
+<section class="client-block">
+  <div class="client-row">
+    <span class="label">NOM CLIENT :</span>
+    <span class="value">{{ inv.client.nom_client }}</span>
+  </div>
+  <div class="client-row">
+    <span class="label">VILLE :</span>
+    <span class="value">{{ inv.client.ville or '' }}</span>
+  </div>
+</section>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th style="width:10%">ORDRE</th>
+      <th style="width:45%">NOM_PRODUIT</th>
+      <th style="width:15%">QTE_VENDUE</th>
+      <th style="width:15%">PRIX_VENTE</th>
+      <th style="width:15%">TOTAL</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for line in inv.lines %}
+    <tr>
+      <td>{{ loop.index }}</td>
+      <td class="text-left">{{ line.product.nom_produit }}</td>
+      <td>{{ line.qte_vnd }}</td>
+      <td>{{ '%.2f'|format(line.prix_vnt) }}</td>
+      <td>{{ '%.2f'|format(line.total()) }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<table class="totals">
+  <tbody>
+    <tr>
+      <td class="label">TOTAL HT</td>
+      <td class="amount">{{ '%.2f'|format(inv.total_ht()) }}</td>
+    </tr>
+    <tr>
+      <td class="label">TVA</td>
+      <td class="amount">{{ '%.2f'|format(inv.total_tva()) }}</td>
+    </tr>
+    <tr>
+      <td class="label strong">TOTAL TTC</td>
+      <td class="amount strong">{{ '%.2f'|format(inv.total_ttc()) }}</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="footer-push"></div>
+
+<!-- the actual fixed footer -->
+<div class="doc-footer">
+  <div class="sep"></div>
+  PROXIMA TRADING SARL — Adresse: Quartier El Wahda 02 Av Ras El Khayma Rue 26 N°30 Laayoune<br>
+  RC: 44653 &nbsp; IF: 53629154 &nbsp; ICE: 00325020200058 &nbsp; PATENTE: 77320085<br>
+  Email: PROXIMATRADING74@GMAIL.COM &nbsp; Tél: 06.39.06.82.86
+</div>
+
+{% endblock %}

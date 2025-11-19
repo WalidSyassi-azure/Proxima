@@ -1,0 +1,8 @@
+Flask
+Flask-SQLAlchemy
+SQLAlchemy
+python-dateutil
+Werkzeug
+pdfkit
+gunicorn
+reportlab

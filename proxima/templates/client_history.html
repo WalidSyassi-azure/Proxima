@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>Historique — {{ c.nom_client }}</h2>
+<p class="text-muted">Restant: <strong>{{ '%.2f'|format(remaining) }}</strong></p>
+
+<div class="row">
+  <div class="col-md-7">
+    <h5>Factures (finalisées)</h5>
+    <table class="table table-sm">
+      <thead><tr><th>N°</th><th>Date</th><th class="text-end">Total TTC</th></tr></thead>
+      <tbody>
+        {% for i in invs %}
+          <tr><td>{{ i.numero }}</td><td>{{ i.date_vente }}</td><td class="text-end">{{ '%.2f'|format(i.total_ttc()) }}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="col-md-5">
+    <h5>Payements</h5>
+    <table class="table table-sm">
+      <thead><tr><th>N°</th><th>Date</th><th class="text-end">Montant</th></tr></thead>
+      <tbody>
+        {% for p in pays %}
+          <tr><td>{{ p.numero }}</td><td>{{ p.date_pymt }}</td><td class="text-end">{{ '%.2f'|format(p.montant_pymt) }}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

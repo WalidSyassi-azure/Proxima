@@ -1,0 +1,70 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>Nouvelle Facture</h2>
+<form method="post" class="row g-2 mb-4">
+  <div class="col-md-3"><input class="form-control" name="numero" placeholder="N°FACUTRE" required></div>
+  <div class="col-md-3"><input type="date" class="form-control" name="date_vente" required></div>
+  <div class="col-md-3">
+    <select class="form-select" name="client_id" required>
+      <option value="">NOM_CLIENT...</option>
+      {% for c in clients %}<option value="{{ c.id }}">{{ c.nom_client }}</option>{% endfor %}
+    </select>
+  </div>
+  <div class="col-md-2"><input class="form-control" type="number" name="nbr_colis" placeholder="NBR_COLIS"></div>
+  <div class="col-md-1"><button class="btn btn-success w-100">Créer</button></div>
+</form>
+
+<hr class="my-4">
+
+<h5>Factures existantes</h5>
+<table class="table table-sm table-hover align-middle">
+  <thead>
+    <tr>
+      <th>N°</th><th>Date</th><th>Client</th><th class="text-end">Colis</th>
+      <th class="text-center">État</th>
+      <th class="text-end">Total TTC</th>
+      <th class="text-end">Payé</th>
+      <th class="text-end">Restant</th>
+      <th class="text-end">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for row in invoice_rows %}
+      {% set i = row.i %}
+      <tr>
+        <form method="post" action="{{ url_for('invoice_update', invoice_id=i.id) }}">
+          <td style="width:13%"><input class="form-control form-control-sm" name="numero" value="{{ i.numero }}"></td>
+          <td style="width:14%"><input class="form-control form-control-sm" type="date" name="date_vente" value="{{ i.date_vente }}"></td>
+          <td style="width:22%">
+            <select class="form-select form-select-sm" name="client_id">
+              {% for c in clients %}
+                <option value="{{ c.id }}" {% if c.id == i.client_id %}selected{% endif %}>{{ c.nom_client }}</option>
+              {% endfor %}
+            </select>
+          </td>
+          <td class="text-end" style="width:8%"><input class="form-control form-control-sm text-end" type="number" name="nbr_colis" value="{{ i.nbr_colis }}"></td>
+          <td class="text-center" style="width:8%">
+            {% if i.finalized %}<span class="badge bg-success">Finalisée</span>{% else %}<span class="badge bg-secondary">Brouillon</span>{% endif %}
+          </td>
+          <td class="text-end" style="width:10%">{{ '%.2f'|format(row.total) }}</td>
+          <td class="text-end" style="width:10%">{{ '%.2f'|format(row.paid) }}</td>
+          <td class="text-end {% if row.remaining>0 %}text-danger{% else %}text-success{% endif %}" style="width:10%">
+            {{ '%.2f'|format(row.remaining) }}
+          </td>
+          <td class="text-end" style="width:15%">
+            <button class="btn btn-sm btn-primary me-1">Enregistrer</button>
+        </form>
+            <form method="post" action="{{ url_for('invoice_toggle_finalize', invoice_id=i.id) }}" class="d-inline">
+              <button class="btn btn-sm btn-outline-success me-1">{% if i.finalized %}Définaliser{% else %}Finaliser{% endif %}</button>
+            </form>
+            <a class="btn btn-sm btn-outline-secondary me-1" href="{{ url_for('invoice_view', invoice_id=i.id) }}">Ouvrir</a>
+            <a class="btn btn-sm btn-outline-secondary me-1" target="_blank" href="{{ url_for('invoice_receipt', invoice_id=i.id) }}">Reçu</a>
+            <form method="post" action="{{ url_for('invoice_delete', invoice_id=i.id) }}" class="d-inline">
+              <button class="btn btn-sm btn-outline-danger" onclick="return confirm('Supprimer cette facture ?')">Supprimer</button>
+            </form>
+          </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

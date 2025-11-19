@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>Liste des Clients</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/pdf.css') }}">
+  <style>
+    .subtitle { color:#444; font-size:12px; margin-top:2px; }
+    /* optional if you want p-2 to work in PDFs */
+    .p-2 { padding: 4px 8px; }
+  </style>
+</head>
+<body>
+
+  <div class="content"><!-- reserve space via css (.content { padding-bottom:28mm }) -->
+
+    <!-- En-tête -->
+    <div class="doc-header">
+      <div class="brand">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" class="logo" alt="PROXIMA TRADING">
+      </div>
+      <div class="doc-title">
+        <div class="title-main">LISTE DES CLIENTS</div>
+        <div class="title-sub subtitle">Date : {{ now.date() }}</div>
+      </div>
+    </div>
+    <hr class="bar">
+
+    <!-- Tableau des clients -->
+    <table class="table">
+      <thead>
+        <tr>
+          <th class="text-left">Nom</th>
+          <th class="text-left">Tél</th>
+          <th class="text-left">Adresse</th>
+          <th class="text-left">Ville</th>
+          <th class="text-right">Solde (MAD)</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for c in rows %}
+        {% set bal = client_balance(c.id) %}
+        <tr>
+          <td class="text-left">{{ c.nom_client or '' }}</td>
+          <td class="text-left">{{ c.tel or '' }}</td>
+          <td class="text-left">{{ c.adresse or '' }}</td>
+          <td class="text-left">{{ c.ville or '' }}</td>
+          <td class="text-right fw-600 {{ 'solde-neg' if bal > 0 else 'solde-pos' }}">
+            {{ '%.2f'|format(bal) }}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <!-- If a specific page is extremely long, you can add this extra push:
+    <div class="footer-push"></div> -->
+
+  </div><!-- /.content -->
+
+  <!-- Footer fixé -->
+  <div class="doc-footer">
+    <div class="sep"></div>
+    PROXIMA TRADING SARL — Adresse: Quartier El Wahda 02 Av Ras El Khayma Rue 26 N°30 Laayoune<br>
+    RC: 44653 &nbsp; IF: 53629154 &nbsp; ICE: 00325020200058 &nbsp; PATENTE: 77320085<br>
+    Email: PROXIMATRADING74@GMAIL.COM &nbsp; Tél: 06.39.06.82.86
+  </div>
+
+</body>
+</html>

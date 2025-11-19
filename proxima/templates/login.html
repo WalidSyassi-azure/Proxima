@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container" style="max-width:420px; margin-top:6rem;">
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <h3 class="mb-3 text-center">Connexion</h3>
+      <form method="post" novalidate>
+        <div class="mb-3">
+          <label class="form-label">Nom d'utilisateur</label>
+          <input name="username" class="form-control" autocomplete="username" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Mot de passe</label>
+          <input name="password" type="password" class="form-control" autocomplete="current-password" required>
+        </div>
+        <button class="btn btn-primary w-100" type="submit">Se connecter</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
